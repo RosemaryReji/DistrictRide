@@ -95,25 +95,34 @@ class RideTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        leading: const CircleAvatar(child: Icon(Icons.person)),
-        title: Text(name),
-        subtitle: Text(seats),
-        trailing: ElevatedButton(
-  child: const Text("Book"),
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => BookingConfirmationScreen(driverName: name),
+  margin: const EdgeInsets.symmetric(vertical: 8),
+  child: InkWell(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => BookingConfirmationScreen(
+            driverName: name,
+            seats: seats,
+            price: price,
+          ),
+        ),
+      );
+    },
+    child: ListTile(
+      leading: const CircleAvatar(child: Icon(Icons.person)),
+      title: Text(name),
+      subtitle: Text(seats),
+      trailing: Text(
+        price,
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
-    );
-  },
-),
+    ),
+  ),
 
-      ),
+
     );
   }
 }
