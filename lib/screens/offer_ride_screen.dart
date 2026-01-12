@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/ride.dart';
 import '../services/ride_service.dart';
 import '../data/districts.dart';
+import '../services/user_service.dart';
 
 class OfferRideScreen extends StatefulWidget {
   const OfferRideScreen({super.key});
@@ -123,7 +124,8 @@ TextField(
     );
   }
 
-  void postRide() {
+  Future<void> postRide() async {
+
     if (fromController.text.isEmpty ||
         toController.text.isEmpty ||
         dateController.text.isEmpty ||
@@ -136,15 +138,19 @@ TextField(
       return;
     }
 
-    final newRide = Ride(
-      driverName: "You",
-      from: fromController.text,
-      to: toController.text,
-      date: dateController.text,
-      time: timeController.text,
-      price: int.parse(priceController.text),
-      seats: int.parse(seatsController.text),
-    );
+    final user = await UserService.getUser();
+
+final newRide = Ride(
+  driverName: user?.name ?? "You",
+  owner: user?.name ?? "You",
+  from: fromController.text,
+  to: toController.text,
+  date: dateController.text,
+  time: timeController.text,
+  price: int.parse(priceController.text),
+  seats: int.parse(seatsController.text),
+);
+
 
     RideService.addRide(newRide);
 
