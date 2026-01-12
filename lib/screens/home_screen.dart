@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'route_screen.dart';
+import 'offer_ride_screen.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -54,7 +55,13 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton(
-                   onPressed: () {},
+                   onPressed: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => const OfferRideScreen()),
+  );
+},
+
 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,

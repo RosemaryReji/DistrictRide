@@ -1,30 +1,32 @@
 import '../models/ride.dart';
 
-import '../models/ride.dart';
-
 class RideService {
+  static final List<Ride> _rides = [
+    Ride(
+      driverName: "Arjun",
+      from: "Kottayam",
+      to: "Kochi",
+      date: "12/1/2026",
+      time: "9:00 AM",
+      price: 120,
+      seats: 3,
+    ),
+    Ride(
+      driverName: "Neha",
+      from: "Kottayam",
+      to: "Kochi",
+      date: "12/1/2026",
+      time: "10:30 AM",
+      price: 100,
+      seats: 2,
+    ),
+  ];
+
   static List<Ride> getAvailableRides() {
-    return [
-      Ride(
-  driverName: "Arjun",
-  from: "Kottayam",
-  to: "Kochi",
-  date: "12/1/2026",
-  time: "9:00 AM",
-  price: 120,
-  seats: 3,
-),
+    return _rides;
+  }
 
-      Ride(
-  driverName: "Neha",
-  from: "Kottayam",
-  to: "Kochi",
-  date: "12/1/2026",
-  time: "10:30 AM",
-  price: 100,
-  seats: 2,
-),
-
-    ];
+  static void addRide(Ride ride) {
+    _rides.add(ride);
   }
 }

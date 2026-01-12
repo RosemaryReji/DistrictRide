@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'results_screen.dart';
+import '../data/districts.dart';
 
 class RouteScreen extends StatefulWidget {
   const RouteScreen({super.key});
@@ -28,24 +29,43 @@ final timeController = TextEditingController();
           children: [
             const Text("From", style: TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
-            TextField(
-  controller: fromController,
+            DropdownButtonFormField<String>(
+  value: null,
+  items: keralaDistricts.map((district) {
+    return DropdownMenuItem(
+      value: district,
+      child: Text(district),
+    );
+  }).toList(),
+  onChanged: (value) {
+    fromController.text = value!;
+  },
   decoration: const InputDecoration(
+    labelText: "From",
     border: OutlineInputBorder(),
-    hintText: "Enter starting district",
   ),
 ),
 
             const SizedBox(height: 20),
             const Text("To", style: TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
-            TextField(
-  controller: toController,
+           DropdownButtonFormField<String>(
+  value: null,
+  items: keralaDistricts.map((district) {
+    return DropdownMenuItem(
+      value: district,
+      child: Text(district),
+    );
+  }).toList(),
+  onChanged: (value) {
+    toController.text = value!;
+  },
   decoration: const InputDecoration(
+    labelText: "To",
     border: OutlineInputBorder(),
-    hintText: "Enter destination district",
   ),
 ),
+
 
 
             const SizedBox(height: 20),
