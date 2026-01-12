@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
 import 'route_screen.dart';
 import 'offer_ride_screen.dart';
+import 'profile_screen.dart';
 
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+class _HomeScreenState extends State<HomeScreen> {
+  int selectedIndex = 0;
+
+  final screens = [
+  Container(),   // dummy placeholder for Home tab
+  RouteScreen(),
+  ProfileScreen(),
+  Container(),
+
+];
+
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +114,13 @@ class HomeScreen extends StatelessWidget {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
+  currentIndex: selectedIndex,
+  onTap: (index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  },
+
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.directions_car), label: "Rides"),
