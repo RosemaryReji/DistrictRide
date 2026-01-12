@@ -16,4 +16,24 @@ class Ride {
     required this.price,
     required this.seats,
   });
+
+  Map<String, dynamic> toJson() => {
+        "driverName": driverName,
+        "from": from,
+        "to": to,
+        "date": date,
+        "time": time,
+        "price": price,
+        "seats": seats,
+      };
+
+  factory Ride.fromJson(Map<String, dynamic> json) => Ride(
+        driverName: json["driverName"],
+        from: json["from"],
+        to: json["to"],
+        date: json["date"],
+        time: json["time"],
+        price: json["price"],
+        seats: json["seats"],
+      );
 }

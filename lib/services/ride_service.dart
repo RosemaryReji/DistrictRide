@@ -1,32 +1,27 @@
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/ride.dart';
 
 class RideService {
-  static final List<Ride> _rides = [
-    Ride(
-      driverName: "Arjun",
-      from: "Kottayam",
-      to: "Kochi",
-      date: "12/1/2026",
-      time: "9:00 AM",
-      price: 120,
-      seats: 3,
-    ),
-    Ride(
-      driverName: "Neha",
-      from: "Kottayam",
-      to: "Kochi",
-      date: "12/1/2026",
-      time: "10:30 AM",
-      price: 100,
-      seats: 2,
-    ),
-  ];
+  static const String _key = "rides";
 
-  static List<Ride> getAvailableRides() {
-    return _rides;
+  static Future<List<Ride>> getAvailableRides() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_key);
+
+    if (data == null) return [];
+
+    final List list = jsonDecode(data);
+    return list.map((e) => Ride.fromJson(e)).toList();
   }
 
-  static void addRide(Ride ride) {
-    _rides.add(ride);
+  static Future<void> addRide(Ride ride) async {
+    final prefs = await SharedPreferences.getInstance();
+    final existing = await getAvailableRides();
+
+    existing.add(ride);
+
+    final encoded = jsonEncode(existing.map((e) => e.toJson()).toList());
+    await prefs.setString(_key, encoded);
   }
 }

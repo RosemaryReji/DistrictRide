@@ -3,7 +3,6 @@ import '../models/ride.dart';
 import '../services/ride_service.dart';
 import 'booking_confirmation_screen.dart';
 
-
 class ResultsScreen extends StatelessWidget {
   final String from;
   final String to;
@@ -43,37 +42,40 @@ class ResultsScreen extends StatelessWidget {
             const SizedBox(height: 12),
 
             Expanded(
-  child: Builder(
-    builder: (context) {
-      final allRides = RideService.getAvailableRides();
+              child: FutureBuilder<List<Ride>>(
+                future: RideService.getAvailableRides(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-      final matchingRides = allRides.where((ride) {
-        return ride.from.toLowerCase() == from.toLowerCase() &&
-            ride.to.toLowerCase() == to.toLowerCase() &&
-            ride.date == date;
-      }).toList();
+                  final allRides = snapshot.data!;
 
-      if (matchingRides.isEmpty) {
-        return const Center(child: Text("No rides found"));
-      }
+                  final matchingRides = allRides.where((ride) {
+                    return ride.from.toLowerCase() == from.toLowerCase() &&
+                        ride.to.toLowerCase() == to.toLowerCase() &&
+                        ride.date == date;
+                  }).toList();
 
-      return ListView.builder(
-        itemCount: matchingRides.length,
-        itemBuilder: (context, index) {
-  final ride = matchingRides[index];
+                  if (matchingRides.isEmpty) {
+                    return const Center(child: Text("No rides found"));
+                  }
 
-  return RideTile(
-    name: ride.driverName,
-    seats: "${ride.seats} seats",
-    price: "₹${ride.price}",
-  );
-},
+                  return ListView.builder(
+                    itemCount: matchingRides.length,
+                    itemBuilder: (context, index) {
+                      final ride = matchingRides[index];
 
-      );
-    },
-  ),
-)
-
+                      return RideTile(
+                        name: ride.driverName,
+                        seats: "${ride.seats} seats",
+                        price: "₹${ride.price}",
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -95,34 +97,31 @@ class RideTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return Card(
-  margin: const EdgeInsets.symmetric(vertical: 8),
-  child: InkWell(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => BookingConfirmationScreen(
-            driverName: name,
-            seats: seats,
-            price: price,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BookingConfirmationScreen(
+                driverName: name,
+                seats: seats,
+                price: price,
+              ),
+            ),
+          );
+        },
+        child: ListTile(
+          leading: const CircleAvatar(child: Icon(Icons.person)),
+          title: Text(name),
+          subtitle: Text(seats),
+          trailing: Text(
+            price,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-      );
-    },
-    child: ListTile(
-      leading: const CircleAvatar(child: Icon(Icons.person)),
-      title: Text(name),
-      subtitle: Text(seats),
-      trailing: Text(
-        price,
-        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
-    ),
-  ),
-
-
     );
   }
 }
