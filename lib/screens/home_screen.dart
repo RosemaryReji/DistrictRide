@@ -95,20 +95,34 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 30),
             Expanded(
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Center(
-                  child: Text(
-                    "Your ride activity will appear here",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                ),
-              ),
-            )
+  child: Column(
+    children: [
+      Expanded(
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Center(
+            child: Text(
+              "Your ride activity will appear here",
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          ),
+        ),
+      ),
+
+      const SizedBox(height: 8),
+
+      const Text(
+        "DistrictRide v1.0 • Built by Rosemary",
+        style: TextStyle(fontSize: 12, color: Colors.grey),
+      ),
+    ],
+  ),
+)
+
           ],
         ),
       ),
