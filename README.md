@@ -37,6 +37,9 @@ Upcoming:
 - Ride history  
 - Multi-user support  
 - Firebase / server backend  
+---
+## 🚀 Vision
+DistrictRide aims to become a district-level ride sharing platform focused on safety, affordability, and community.
 
 ---
 
