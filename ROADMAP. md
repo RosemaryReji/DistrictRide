@@ -1,0 +1,34 @@
+# 🗺 DistrictRide Roadmap
+
+## Phase 1 – Core App
+- User login & profile
+- Offer a ride
+- Find a ride
+- Ride listing
+- Local storage
+
+## Phase 2 – Booking System
+- Book a ride
+- Confirm seats
+- Show booked rides
+- Ride history
+
+## Phase 3 – Multi-user
+- Firebase authentication
+- User accounts
+- Driver & passenger profiles
+
+## Phase 4 – Payments
+- UPI integration
+- Wallet system
+- Ride payment tracking
+
+## Phase 5 – Safety
+- SOS button
+- Emergency contacts
+- Ride tracking
+
+## Phase 6 – Smart Features
+- AI ride matching
+- Price suggestions
+- Driver ratings
