@@ -43,4 +43,19 @@ class Ride {
         price: json["price"] ?? 0,
         seats: json["seats"] ?? 0,
       );
+Ride bookSeats(int count) {
+  if (count > seats) {
+    throw Exception("Not enough seats available");
+  }
+
+  return Ride(
+    driverName: driverName,
+    from: from,
+    to: to,
+    date: date,
+    time: time,
+    price: price,
+    seats: seats - count,
+  );
+}
 }
