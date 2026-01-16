@@ -1,6 +1,5 @@
 class Ride {
   final String driverName;
-  final String owner;        // <-- NEW
   final String from;
   final String to;
   final String date;
@@ -10,7 +9,6 @@ class Ride {
 
   Ride({
     required this.driverName,
-    required this.owner,
     required this.from,
     required this.to,
     required this.date,
@@ -19,9 +17,15 @@ class Ride {
     required this.seats,
   });
 
+  bool get isValid {
+    return from.isNotEmpty &&
+        to.isNotEmpty &&
+        price > 0 &&
+        seats > 0;
+  }
+
   Map<String, dynamic> toJson() => {
         "driverName": driverName,
-        "owner": owner,
         "from": from,
         "to": to,
         "date": date,
@@ -31,13 +35,12 @@ class Ride {
       };
 
   factory Ride.fromJson(Map<String, dynamic> json) => Ride(
-        driverName: json["driverName"],
-        owner: json["owner"],
-        from: json["from"],
-        to: json["to"],
-        date: json["date"],
-        time: json["time"],
-        price: json["price"],
-        seats: json["seats"],
+        driverName: json["driverName"] ?? "",
+        from: json["from"] ?? "",
+        to: json["to"] ?? "",
+        date: json["date"] ?? "",
+        time: json["time"] ?? "",
+        price: json["price"] ?? 0,
+        seats: json["seats"] ?? 0,
       );
 }
