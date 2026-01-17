@@ -35,3 +35,7 @@ static Future<List<Ride>> findMatchingRides({
         ride.date == date;
   }).toList();
 }
+static Future<bool> hasRides() async {
+  final rides = await getAvailableRides();
+  return rides.isNotEmpty;
+}
