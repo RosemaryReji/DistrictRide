@@ -27,6 +27,10 @@ This project is being built as a real-world prototype for learning Flutter, app 
 
 ---
 
+## 🛡 Security First
+DistrictRide is being designed with security best practices in mind, including input validation, role-based access, and safe data handling.
+---
+
 ## 🎯 Project Status
 
 🚧 Actively in development  
