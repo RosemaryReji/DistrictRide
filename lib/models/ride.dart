@@ -1,3 +1,4 @@
+// Ride model represents a single ride offer
 class Ride {
   final String driverName;
   final String from;
@@ -7,6 +8,7 @@ class Ride {
   final int price;
   final int seats;
 
+  // Constructor
   Ride({
     required this.driverName,
     required this.from,
@@ -17,6 +19,7 @@ class Ride {
     required this.seats,
   });
 
+  // Check if ride details are valid
   bool get isValid {
     return from.isNotEmpty &&
         to.isNotEmpty &&
@@ -24,6 +27,7 @@ class Ride {
         seats > 0;
   }
 
+  // Convert Ride object to JSON for storage
   Map<String, dynamic> toJson() => {
         "driverName": driverName,
         "from": from,
@@ -34,6 +38,7 @@ class Ride {
         "seats": seats,
       };
 
+  // Create Ride object from JSON
   factory Ride.fromJson(Map<String, dynamic> json) => Ride(
         driverName: json["driverName"] ?? "",
         from: json["from"] ?? "",
@@ -43,19 +48,21 @@ class Ride {
         price: json["price"] ?? 0,
         seats: json["seats"] ?? 0,
       );
-Ride bookSeats(int count) {
-  if (count > seats) {
-    throw Exception("Not enough seats available");
-  }
 
-  return Ride(
-    driverName: driverName,
-    from: from,
-    to: to,
-    date: date,
-    time: time,
-    price: price,
-    seats: seats - count,
-  );
-}
+  // Reduce available seats when booking
+  Ride bookSeats(int count) {
+    if (count > seats) {
+      throw Exception("Not enough seats available");
+    }
+
+    return Ride(
+      driverName: driverName,
+      from: from,
+      to: to,
+      date: date,
+      time: time,
+      price: price,
+      seats: seats - count,
+    );
+  }
 }
