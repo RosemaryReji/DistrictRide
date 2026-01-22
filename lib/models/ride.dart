@@ -20,6 +20,7 @@ class Ride {
   });
 
   // Check if ride details are valid
+// Used to validate ride input before saving
   bool get isValid {
     return from.isNotEmpty &&
         to.isNotEmpty &&
@@ -50,6 +51,7 @@ class Ride {
       );
 
   // Reduce available seats when booking
+// Handles seat reduction when a passenger books seats
   Ride bookSeats(int count) {
     if (count > seats) {
       throw Exception("Not enough seats available");
