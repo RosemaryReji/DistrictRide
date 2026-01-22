@@ -1,3 +1,9 @@
+/// RideService handles all ride-related data operations
+/// - Saving rides
+/// - Fetching rides
+/// - Filtering matching rides
+/// - Checking availability
+
 import 'dart:convert';
 import '../models/ride.dart';
 import '../main.dart';
