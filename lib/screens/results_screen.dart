@@ -51,7 +51,11 @@ class ResultsScreen extends StatelessWidget {
 
                   final allRides = snapshot.data!;
 
-                  final matchingRides = allRides.where((ride) {
+                  final matchingRides = await RideService.findMatchingRides(
+  from: from,
+  to: to,
+  date: date,
+);
                     return ride.from.toLowerCase() == from.toLowerCase() &&
                         ride.to.toLowerCase() == to.toLowerCase() &&
                         ride.date == date;
