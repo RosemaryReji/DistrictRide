@@ -142,7 +142,6 @@ TextField(
 
 final newRide = Ride(
   driverName: user?.name ?? "You",
-  owner: user?.name ?? "You",
   from: fromController.text,
   to: toController.text,
   date: dateController.text,
