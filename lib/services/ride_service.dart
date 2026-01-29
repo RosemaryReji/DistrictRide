@@ -9,6 +9,24 @@ import '../models/ride.dart';
 import '../main.dart';
 
 class RideService {
+  static Future<void> updateRide(Ride updatedRide) async {
+  final prefs = await SharedPreferences.getInstance();
+  final rides = await getAvailableRides();
+
+  final index = rides.indexWhere((r) =>
+      r.driverName == updatedRide.driverName &&
+      r.from == updatedRide.from &&
+      r.to == updatedRide.to &&
+      r.date == updatedRide.date &&
+      r.time == updatedRide.time);
+
+  if (index != -1) {
+    rides[index] = updatedRide;
+    final encoded = jsonEncode(rides.map((e) => e.toJson()).toList());
+    await prefs.setString(_key, encoded);
+  }
+}
+
   static const String _key = "rides";
 
   // Get all available rides from local storage

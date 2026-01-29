@@ -43,27 +43,25 @@ class ResultsScreen extends StatelessWidget {
 
             Expanded(
               child: FutureBuilder<List<Ride>>(
-                future: RideService.getAvailableRides(),
+                future: RideService.findMatchingRides(
+                  from: from,
+                  to: to,
+                  date: date,
+                ),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
 
-                  final allRides = snapshot.data!;
-
-                  final matchingRides = await RideService.findMatchingRides(
-  from: from,
-  to: to,
-  date: date,
-);
-                    return ride.from.toLowerCase() == from.toLowerCase() &&
-                        ride.to.toLowerCase() == to.toLowerCase() &&
-                        ride.date == date;
-                  }).toList();
-
-                  if (matchingRides.isEmpty) {
-                    return const Center(child: Text("No rides found"));
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text("No rides found"),
+                    );
                   }
+
+                  final matchingRides = snapshot.data!;
 
                   return ListView.builder(
                     itemCount: matchingRides.length,
