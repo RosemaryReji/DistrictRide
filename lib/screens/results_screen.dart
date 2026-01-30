@@ -1,116 +1,107 @@
-import 'package:flutter/material.dart';
+
 import '../models/ride.dart';
+import '../models/booking.dart';
 import '../services/ride_service.dart';
-import 'booking_confirmation_screen.dart';
+import '../services/booking_service.dart';
 
-class ResultsScreen extends StatelessWidget {
-  final String from;
-  final String to;
-  final String date;
-  final String time;
+class BookingConfirmationScreen extends StatefulWidget {
+  final Ride ride;
 
-  const ResultsScreen({
+  const BookingConfirmationScreen({
     super.key,
-    required this.from,
-    required this.to,
-    required this.date,
-    required this.time,
+    required this.ride,
   });
+
+  @override
+  State<BookingConfirmationScreen> createState() =>
+      _BookingConfirmationScreenState();
+}
+
+class _BookingConfirmationScreenState
+    extends State<BookingConfirmationScreen> {
+  bool isProcessing = true;
+
+  @override
+  void initState() {
+    super.initState();
+    confirmBooking();
+  }
+
+  Future<void> confirmBooking() async {
+    try {
+      // 1️⃣ Reduce seat count
+      final updatedRide = widget.ride.bookSeats(1);
+
+      // 2️⃣ Update ride in storage
+      await RideService.updateRide(updatedRide);
+
+      // 3️⃣ Save booking
+      final booking = Booking(
+        driverName: widget.ride.driverName,
+        from: widget.ride.from,
+        to: widget.ride.to,
+        date: widget.ride.date,
+        time: widget.ride.time,
+        seats: 1,
+        price: widget.ride.price,
+      );
+
+      await BookingService.addBooking(booking);
+
+      setState(() {
+        isProcessing = false;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Booking failed: $e")),
+      );
+      Navigator.pop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Available Rides")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("From: $from", style: const TextStyle(fontSize: 16)),
-            Text("To: $to", style: const TextStyle(fontSize: 16)),
-            Text("Date: $date", style: const TextStyle(fontSize: 16)),
-            Text("Time: $time", style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 20),
-
-            const Divider(),
-
-            const Text(
-              "Matching rides",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-
-            const SizedBox(height: 12),
-
-            Expanded(
-              child: FutureBuilder<List<Ride>>(
-                future: RideService.findMatchingRides(
-                  from: from,
-                  to: to,
-                  date: date,
-                ),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text("No rides found"),
-                    );
-                  }
-
-                  final matchingRides = snapshot.data!;
-
-                  return ListView.builder(
-                    itemCount: matchingRides.length,
-                    itemBuilder: (context, index) {
-                      final ride = matchingRides[index];
-
-                      return RideTile(
-                        name: ride.driverName,
-                        seats: "${ride.seats} seats",
-                        price: "₹${ride.price}",
-                      );
+      appBar: AppBar(title: const Text("Booking Status")),
+      body: Center(
+        child: isProcessing
+            ? const CircularProgressIndicator()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.check_circle,
+                      size: 80, color: Colors.green),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Your ride with ${widget.ride.driverName} is confirmed!",
+                    style: const TextStyle(fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Seats booked: 1",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    "Total price: ₹${widget.ride.price}",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.popUntil(
+                          context, (route) => route.isFirst);
                     },
-                  );
-                },
+                    child: const Text("Go to Home"),
+                  )
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
 }
 
-class RideTile extends StatelessWidget {
-  final String name;
-  final String seats;
-  final String price;
-
-  const RideTile({
-    super.key,
-    required this.name,
-    required this.seats,
-    required this.price,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => BookingConfirmationScreen(
-                driverName: name,
-                seats: seats,
-                price: price,
-              ),
             ),
           );
         },
