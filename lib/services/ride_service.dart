@@ -1,49 +1,24 @@
-/// RideService handles all ride-related data operations
-/// - Saving rides
-/// - Fetching rides
-/// - Filtering matching rides
-/// - Checking availability
-
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/ride.dart';
-import '../main.dart';
 
 class RideService {
-  static Future<void> updateRide(Ride updatedRide) async {
-  final prefs = await SharedPreferences.getInstance();
-  final rides = await getAvailableRides();
-
-  final index = rides.indexWhere((r) =>
-      r.driverName == updatedRide.driverName &&
-      r.from == updatedRide.from &&
-      r.to == updatedRide.to &&
-      r.date == updatedRide.date &&
-      r.time == updatedRide.time);
-
-  if (index != -1) {
-    rides[index] = updatedRide;
-    final encoded = jsonEncode(rides.map((e) => e.toJson()).toList());
-    await prefs.setString(_key, encoded);
-  }
-}
-
   static const String _key = "rides";
 
-  // Get all available rides from local storage
+  // Get all available rides
   static Future<List<Ride>> getAvailableRides() async {
+    final prefs = await SharedPreferences.getInstance();
     final data = prefs.getString(_key);
 
-    // If no rides are stored, return empty list
     if (data == null) return [];
 
     final List list = jsonDecode(data);
-
-    // Convert JSON list to Ride objects
     return list.map((e) => Ride.fromJson(e)).toList();
   }
 
-  // Add a new ride and save it
+  // Add a new ride
   static Future<void> addRide(Ride ride) async {
+    final prefs = await SharedPreferences.getInstance();
     final existing = await getAvailableRides();
 
     existing.add(ride);
@@ -54,7 +29,27 @@ class RideService {
     await prefs.setString(_key, encoded);
   }
 
-  // Find rides that match from, to, and date
+  // Update an existing ride (after booking seats)
+  static Future<void> updateRide(Ride updatedRide) async {
+    final prefs = await SharedPreferences.getInstance();
+    final rides = await getAvailableRides();
+
+    final index = rides.indexWhere((r) =>
+        r.driverName == updatedRide.driverName &&
+        r.from == updatedRide.from &&
+        r.to == updatedRide.to &&
+        r.date == updatedRide.date &&
+        r.time == updatedRide.time);
+
+    if (index != -1) {
+      rides[index] = updatedRide;
+      final encoded =
+          jsonEncode(rides.map((e) => e.toJson()).toList());
+      await prefs.setString(_key, encoded);
+    }
+  }
+
+  // Find matching rides
   static Future<List<Ride>> findMatchingRides({
     required String from,
     required String to,
@@ -69,7 +64,7 @@ class RideService {
     }).toList();
   }
 
-  // Check if any rides exist
+  // Check if rides exist
   static Future<bool> hasRides() async {
     final rides = await getAvailableRides();
     return rides.isNotEmpty;
