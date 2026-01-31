@@ -82,14 +82,16 @@ class RideService {
 
   if (index != -1) {
     final updatedRide = Ride(
-      driverName: ride.driverName,
-      from: ride.from,
-      to: ride.to,
-      date: ride.date,
-      time: ride.time,
-      price: ride.price,
-      seats: ride.seats + count,
-    );
+  driverName: ride.driverName,
+  from: ride.from,
+  to: ride.to,
+  date: ride.date,
+  time: ride.time,
+  price: ride.price,
+  seats: ride.seats + count,
+  rating: ride.rating, // ⭐ ADD THIS
+);
+
 
     rides[index] = updatedRide;
 

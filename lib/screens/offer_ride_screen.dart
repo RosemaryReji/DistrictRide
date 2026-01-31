@@ -148,6 +148,7 @@ final newRide = Ride(
   time: timeController.text,
   price: int.parse(priceController.text),
   seats: int.parse(seatsController.text),
+  rating: 4.5, // ⭐ default rating
 );
 
 

@@ -7,6 +7,7 @@ class Ride {
   final String time;
   final int price;
   final int seats;
+  final double rating;
 
   // Constructor
   Ride({
@@ -17,10 +18,10 @@ class Ride {
     required this.time,
     required this.price,
     required this.seats,
+    required this.rating,
   });
 
   // Check if ride details are valid
-// Used to validate ride input before saving
   bool get isValid {
     return from.isNotEmpty &&
         to.isNotEmpty &&
@@ -37,6 +38,7 @@ class Ride {
         "time": time,
         "price": price,
         "seats": seats,
+        "rating": rating,
       };
 
   // Create Ride object from JSON
@@ -48,10 +50,10 @@ class Ride {
         time: json["time"] ?? "",
         price: json["price"] ?? 0,
         seats: json["seats"] ?? 0,
+        rating: (json["rating"] ?? 4.5).toDouble(),
       );
 
   // Reduce available seats when booking
-// Handles seat reduction when a passenger books seats
   Ride bookSeats(int count) {
     if (count > seats) {
       throw Exception("Not enough seats available");
@@ -65,6 +67,7 @@ class Ride {
       time: time,
       price: price,
       seats: seats - count,
+      rating: rating, // ⭐ IMPORTANT
     );
   }
 }
