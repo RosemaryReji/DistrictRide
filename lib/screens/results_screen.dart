@@ -78,20 +78,28 @@ class ResultsScreen extends StatelessWidget {
                           title: Text(ride.driverName),
                           subtitle:
                               Text("${ride.seats} seats available"),
-                          trailing: ElevatedButton(
-                            child: const Text("Book"),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      BookingConfirmationScreen(
-                                    ride: ride,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                          trailing: ride.seats > 0
+    ? ElevatedButton(
+        child: const Text("Book"),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BookingConfirmationScreen(
+                ride: ride,
+              ),
+            ),
+          );
+        },
+      )
+    : const Chip(
+        label: Text(
+          "FULL",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+      ),
+
                         ),
                       );
                     },
