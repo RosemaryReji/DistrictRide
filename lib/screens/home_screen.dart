@@ -3,6 +3,8 @@ import 'route_screen.dart';
 import 'offer_ride_screen.dart';
 import 'profile_screen.dart';
 import 'my_bookings_screen.dart';
+import '../services/booking_service.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,6 +14,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int bookingCount = 0;
+
   int selectedIndex = 0;
 
   final screens = [
@@ -103,32 +107,58 @@ class _HomeScreenState extends State<HomeScreen> {
 
             /// 🔹 MY BOOKINGS BUTTON (NEW)
             SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.receipt_long),
-                label: const Text(
-                  "My Bookings",
-                  style: TextStyle(fontSize: 18),
-                ),
-                style: ElevatedButton.styleFrom(
-  backgroundColor: Colors.deepOrange,
-  foregroundColor: Colors.white,
-  padding: const EdgeInsets.symmetric(vertical: 18),
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(20),
-  ),
-),
+  width: double.infinity,
+  child: Stack(
+    children: [
+      ElevatedButton.icon(
+        icon: const Icon(Icons.receipt_long),
+        label: const Text(
+          "My Bookings",
+          style: TextStyle(fontSize: 18),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.deepOrange,
+          foregroundColor: Colors.white,
+          elevation: 4,
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const MyBookingsScreen(),
+            ),
+          );
 
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const MyBookingsScreen(),
-                    ),
-                  );
-                },
+          // Refresh count after returning
+          loadBookingCount();
+        },
+      ),
+
+      if (bookingCount > 0)
+        Positioned(
+          right: 16,
+          top: 6,
+          child: CircleAvatar(
+            radius: 12,
+            backgroundColor: Colors.red,
+            child: Text(
+              bookingCount.toString(),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
               ),
             ),
+          ),
+        ),
+    ],
+  ),
+),
+,
 
             const SizedBox(height: 30),
 
@@ -190,4 +220,17 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+  @override
+void initState() {
+  super.initState();
+  loadBookingCount();
+}
+
+Future<void> loadBookingCount() async {
+  final bookings = await BookingService.getBookings();
+  setState(() {
+    bookingCount = bookings.length;
+  });
+}
+
 }
