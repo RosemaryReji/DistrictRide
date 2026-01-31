@@ -69,4 +69,34 @@ class RideService {
     final rides = await getAvailableRides();
     return rides.isNotEmpty;
   }
+  static Future<void> restoreSeat(Ride ride, int count) async {
+  final prefs = await SharedPreferences.getInstance();
+  final rides = await getAvailableRides();
+
+  final index = rides.indexWhere((r) =>
+      r.driverName == ride.driverName &&
+      r.from == ride.from &&
+      r.to == ride.to &&
+      r.date == ride.date &&
+      r.time == ride.time);
+
+  if (index != -1) {
+    final updatedRide = Ride(
+      driverName: ride.driverName,
+      from: ride.from,
+      to: ride.to,
+      date: ride.date,
+      time: ride.time,
+      price: ride.price,
+      seats: ride.seats + count,
+    );
+
+    rides[index] = updatedRide;
+
+    final encoded =
+        jsonEncode(rides.map((e) => e.toJson()).toList());
+    await prefs.setString(_key, encoded);
+  }
+}
+
 }

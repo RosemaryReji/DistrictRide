@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/booking.dart';
+import '../models/ride.dart';
 import '../services/booking_service.dart';
+import '../services/ride_service.dart';
 
 class MyBookingsScreen extends StatelessWidget {
   const MyBookingsScreen({super.key});
@@ -35,9 +37,39 @@ class MyBookingsScreen extends StatelessWidget {
                   subtitle: Text(
                     "${booking.date} at ${booking.time}\nDriver: ${booking.driverName}",
                   ),
-                  trailing: Text(
-                    "₹${booking.price}",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.cancel, color: Colors.red),
+                    onPressed: () async {
+                      // 1️⃣ Remove booking
+                      await BookingService.removeBooking(booking);
+
+                      // 2️⃣ Restore seat
+                      final ride = Ride(
+                        driverName: booking.driverName,
+                        from: booking.from,
+                        to: booking.to,
+                        date: booking.date,
+                        time: booking.time,
+                        price: booking.price,
+                        seats: booking.seats,
+                      );
+
+                      await RideService.restoreSeat(ride, booking.seats);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Booking cancelled"),
+                        ),
+                      );
+
+                      // 3️⃣ Refresh screen
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const MyBookingsScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ),
               );
