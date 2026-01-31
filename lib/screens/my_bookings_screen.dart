@@ -32,46 +32,66 @@ class MyBookingsScreen extends StatelessWidget {
               return Card(
                 margin: const EdgeInsets.all(12),
                 child: ListTile(
-                  leading: const Icon(Icons.event_seat),
-                  title: Text("${booking.from} → ${booking.to}"),
-                  subtitle: Text(
-                    "${booking.date} at ${booking.time}\nDriver: ${booking.driverName}",
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.cancel, color: Colors.red),
-                    onPressed: () async {
-                      // 1️⃣ Remove booking
-                      await BookingService.removeBooking(booking);
+  leading: const Icon(Icons.event_seat),
+  title: Text("${booking.from} → ${booking.to}"),
+  subtitle: Text(
+    "${booking.date} at ${booking.time}\nDriver: ${booking.driverName}",
+  ),
+  trailing: IconButton(
+    icon: const Icon(Icons.cancel, color: Colors.red),
+    onPressed: () async {
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Cancel booking?"),
+          content: const Text(
+            "Are you sure you want to cancel this booking?",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("No"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text("Yes, Cancel"),
+            ),
+          ],
+        ),
+      );
 
-                      // 2️⃣ Restore seat
-                      final ride = Ride(
-                        driverName: booking.driverName,
-                        from: booking.from,
-                        to: booking.to,
-                        date: booking.date,
-                        time: booking.time,
-                        price: booking.price,
-                        seats: booking.seats,
-                      );
+      if (confirm != true) return;
 
-                      await RideService.restoreSeat(ride, booking.seats);
+      await BookingService.removeBooking(booking);
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Booking cancelled"),
-                        ),
-                      );
+      final ride = Ride(
+        driverName: booking.driverName,
+        from: booking.from,
+        to: booking.to,
+        date: booking.date,
+        time: booking.time,
+        price: booking.price,
+        seats: booking.seats,
+      );
 
-                      // 3️⃣ Refresh screen
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const MyBookingsScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+      await RideService.restoreSeat(ride, booking.seats);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Booking cancelled")),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const MyBookingsScreen(),
+        ),
+      );
+    },
+  ),
+)
               );
             },
           );
