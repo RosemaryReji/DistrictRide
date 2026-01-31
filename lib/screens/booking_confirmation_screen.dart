@@ -29,13 +29,13 @@ class _BookingConfirmationScreenState
 
   Future<void> confirmBooking() async {
     try {
-      // 1️⃣ Reduce seat count
+      // Reduce seat count
       final updatedRide = widget.ride.bookSeats(1);
 
-      // 2️⃣ Update ride in storage
+      // Update ride in storage
       await RideService.updateRide(updatedRide);
 
-      // 3️⃣ Save booking
+      // Save booking
       final booking = Booking(
         driverName: widget.ride.driverName,
         from: widget.ride.from,
@@ -78,9 +78,9 @@ class _BookingConfirmationScreenState
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
-                  Text(
+                  const Text(
                     "Seats booked: 1",
-                    style: const TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16),
                   ),
                   Text(
                     "Total price: ₹${widget.ride.price}",
